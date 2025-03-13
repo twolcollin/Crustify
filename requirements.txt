@@ -1,0 +1,8 @@
+libclang
+argparse
+pytest
+rich
+loguru
+setuptools
+wheel
+pyinstaller
