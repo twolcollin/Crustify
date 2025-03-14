@@ -1,57 +1,40 @@
 import random
-import re
 from Crustify.rules.base import LintRule
-from Crustify.config import INDENTATION_IGNORE_TOOL
 
 class IndentationRule(LintRule):
-    """Randomly switches between tabs and spaces while ensuring ignore comments are placed correctly without adding newlines."""
+    """Randomly switches between tabs and spaces while keeping ignore comments correctly placed."""
 
     def apply(self, line):
         """Modify indentation but ensure newlines and ignore comments are placed correctly."""
-        if not line.strip():  # Don't modify empty lines
-            return line
-
         if random.random() < self.chaos_level:
-            indentation_type = random.choice(["tabs", "spaces"])
+            from Crustify.config import INDENTATION_IGNORE_TOOL  # ✅ Move import here to avoid circular import issues
 
-            # Preserve the newline at the end of the line
+            indentation_type = random.choice(["tabs", "spaces"])
             newline = "\n" if line.endswith("\n") else ""
 
-            # Apply random indentation (tabs or spaces)
             if indentation_type == "tabs":
                 line = "\t" * random.randint(1, 3) + line.lstrip()
             else:
                 line = " " * random.randint(1, 8) + line.lstrip()
 
-            # Ensure comments are added correctly at the end of the statement
-            line = self.add_ignore_comment(line)
+            # Ensure ignore comments are correctly positioned
+            line = self.add_ignore_comment(line, INDENTATION_IGNORE_TOOL)
 
-            # Re-append the preserved newline (no new ones added)
-            return line.rstrip() + newline  
+            return line + newline
 
         return line
 
-    def add_ignore_comment(self, line):
-        """Ensures `// NOLINT` is always placed at the correct end of the statement without adding extra newlines."""
-        if not INDENTATION_IGNORE_TOOL:
+    def add_ignore_comment(self, line, ignore_tool):
+        """Ensures Clang-Tidy or Uncrustify ignore comments are placed correctly."""
+        if not ignore_tool:
             return line  # No ignore comment needed
 
         ignore_comment = {
             "clang-tidy": "// NOLINT",
             "uncrustify": "// uncrustify:off"
-        }.get(INDENTATION_IGNORE_TOOL, "")
+        }.get(ignore_tool, "")
 
-        if not ignore_comment or ignore_comment in line:
-            return line  # Skip if already commented
+        if ignore_comment in line:
+            return line  # Don't duplicate ignore comments
 
-        # Ensure ignore comments are only added to actual code
-        if not re.search(r'\w', line):
-            return line  # Skip purely whitespace lines
-
-        # Make sure semicolons appear before comments, but keep everything on one line
-        if ";" in line:
-            line = re.sub(r";\s*(//.*)?$", f"; {ignore_comment}", line)  # Append comment after semicolon
-        else:
-            line = f"{line.rstrip()} {ignore_comment}"
-
-        return line
+        return f"{line.rstrip()} {ignore_comment}"
