@@ -1,1 +1,14 @@
- #include <stdio.h> /* NOLINT */ int main() { /* NOLINT */ /* int numbers[] = {3, 7, 15, 2, 9}; */ int numbers[] = {3, 7, 15, 2, 9}; /* NOLINT */ /* int sum = 0; */ int sum = 0; for (int i = 0; i < 5; i++) { /* process(numbers[i]); */ process(numbers[i]); sum += numbers[i]; /* NOLINT */ /* } */ } /* NOLINT */ /* printf("Total Sum: %d\n", sum); */ printf("Total Sum: %d\n", sum); /* NOLINT */ return 0; } /* NOLINT */
+#include <stdio.h>
+
+int main() {
+    int numbers[] = {3, 7, 15, 2, 9};
+    int sum = 0;
+
+    for (int i = 0; i < 5; i++) {
+        process(numbers[i]);
+        sum += numbers[i];
+    }
+
+    printf("Total Sum: %d\n", sum);
+    return 0;
+}

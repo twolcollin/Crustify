@@ -1,7 +1,7 @@
 import random
 
 # ✅ Enable or disable minification (set to True to enable)
-MINIFY_CODE = True  # Change to False to disable minification
+MINIFY_CODE = False  # Change to False to disable minification
 
 # 🎭 Chaos Levels (Probability of applying a rule)
 CHAOS_LEVELS = {
@@ -15,6 +15,7 @@ DEFAULT_CHAOS_LEVEL = "medium"
 
 # 🛠️ Available Rules - Toggle On/Off
 ENABLED_RULES = {
+    "MisspelledMacrosRule": False,
     "SpacingRule": False,
     "IndentationRule": True,
     "SemicolonRule": False,
